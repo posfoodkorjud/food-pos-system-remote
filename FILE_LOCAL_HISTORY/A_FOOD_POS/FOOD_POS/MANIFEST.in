@@ -1,0 +1,67 @@
+# MANIFEST.in - Package inclusion rules
+# กำหนดไฟล์ที่จะรวมใน Python package
+
+# Include documentation
+include README.md
+include LICENSE
+include requirements.txt
+include .env
+
+# Include batch files for Windows
+include *.bat
+
+# Include setup files
+include setup.py
+include MANIFEST.in
+
+# Include all frontend files
+recursive-include frontend *.html
+recursive-include frontend *.css
+recursive-include frontend *.js
+recursive-include frontend *.png
+recursive-include frontend *.jpg
+recursive-include frontend *.jpeg
+recursive-include frontend *.gif
+recursive-include frontend *.svg
+recursive-include frontend *.ico
+
+# Include all backend files
+recursive-include backend *.py
+
+# Include data directory (if exists)
+recursive-include data *
+
+# Include logs directory structure
+graft logs
+
+# Include config files
+recursive-include config *.json
+recursive-include config *.yaml
+recursive-include config *.yml
+recursive-include config *.ini
+
+# Exclude compiled Python files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude .git*
+global-exclude .DS_Store
+global-exclude Thumbs.db
+
+# Exclude development files
+exclude .gitignore
+exclude .flake8
+exclude pytest.ini
+exclude tox.ini
+
+# Exclude IDE files
+global-exclude .vscode
+global-exclude .idea
+global-exclude *.swp
+global-exclude *.swo
+
+# Exclude temporary files
+global-exclude *~
+global-exclude *.tmp
+global-exclude *.bak

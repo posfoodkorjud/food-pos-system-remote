@@ -1,0 +1,46 @@
+# Food POS System - Python Dependencies
+# ระบบ POS สำหรับร้านอาหาร - รายการ Python packages ที่จำเป็น
+
+# Web Framework
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# QR Code Generation
+qrcode[pil]==7.4.2
+Pillow==10.0.1
+
+# Google Sheets Integration
+google-api-python-client==2.103.0
+google-auth==2.23.3
+google-auth-oauthlib==1.1.0
+google-auth-httplib2==0.1.1
+
+# Utilities
+requests==2.31.0
+python-dotenv==1.0.0
+
+# Excel Export
+pandas==2.1.1
+openpyxl==3.1.2
+
+# Additional Flask utilities
+markupsafe==2.1.3
+werkzeug==2.3.7
+jinja2==3.1.2
+itsdangerous==2.1.2
+click==8.1.7
+
+# Optional: Desktop GUI (uncomment if needed)
+# PyQt5==5.15.9
+
+# Optional: Printer Support (uncomment if needed)
+# python-escpos==3.0
+# pyusb==1.2.1
+
+# Optional: Development Tools (uncomment if needed)
+# pytest==7.4.2
+# black==23.9.1
+# flake8==6.1.0
+
+# Note: sqlite3, datetime, json, os, sys, threading, time are built-in Python modules
+# and don't need to be installed via pip

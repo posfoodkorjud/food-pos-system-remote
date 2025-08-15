@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Toggle Switch</title>
+    <style>
+        .availability-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #28a745;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Toggle Switch</h1>
+    
+    <div class="availability-toggle">
+        <label class="toggle-switch">
+            <input type="checkbox" checked onchange="toggleTest(this)">
+            <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label" id="toggle-label-1">พร้อมขาย</span>
+    </div>
+    
+    <div class="availability-toggle">
+        <label class="toggle-switch">
+            <input type="checkbox" onchange="toggleTest(this)">
+            <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label" id="toggle-label-2">หมด</span>
+    </div>
+    
+    <script>
+        function toggleTest(checkbox) {
+            const label = checkbox.closest('.availability-toggle').querySelector('.toggle-label');
+            if (checkbox.checked) {
+                label.textContent = 'พร้อมขาย';
+                label.style.color = '#28a745';
+            } else {
+                label.textContent = 'หมด';
+                label.style.color = '#dc3545';
+            }
+        }
+    </script>
+</body>
+</html>

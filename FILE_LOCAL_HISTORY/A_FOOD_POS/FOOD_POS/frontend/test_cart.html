@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบตะกร้าสินค้า</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>ทดสอบระบบตะกร้าสินค้า</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>เลือกโต๊ะ</h4>
+                <button class="btn btn-primary" onclick="selectTestTable()">เลือกโต๊ะ 1</button>
+                <p id="table-status">ยังไม่ได้เลือกโต๊ะ</p>
+                
+                <h4 class="mt-4">เพิ่มสินค้า</h4>
+                <button class="btn btn-success" onclick="addTestItem()">เพิ่มข้าวผัดกุ้ง</button>
+                <button class="btn btn-success" onclick="addTestItem2()">เพิ่มต้มยำกุ้ง</button>
+                
+                <h4 class="mt-4">ตะกร้าสินค้า</h4>
+                <div id="cart-display">
+                    <p>ตะกร้าว่าง</p>
+                </div>
+                
+                <button class="btn btn-warning" id="confirm-btn" onclick="testConfirmOrder()" disabled>
+                    ยืนยันการสั่ง
+                </button>
+            </div>
+            
+            <div class="col-md-6">
+                <h4>Debug Info</h4>
+                <div id="debug-info">
+                    <p>currentTable: <span id="current-table-debug">null</span></p>
+                    <p>cart.length: <span id="cart-length-debug">0</span></p>
+                    <p>cart contents: <span id="cart-contents-debug">[]</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // จำลองตัวแปรจาก order.js
+        let currentTable = null;
+        let cart = [];
+        
+        function selectTestTable() {
+            currentTable = { id: 1, name: 'โต๊ะ 1' };
+            document.getElementById('table-status').textContent = 'เลือกโต๊ะ 1 แล้ว';
+            updateDebugInfo();
+        }
+        
+        function addTestItem() {
+            if (!currentTable) {
+                alert('กรุณาเลือกโต๊ะก่อน');
+                return;
+            }
+            
+            const item = {
+                item_id: 1,
+                name: 'ข้าวผัดกุ้ง',
+                price: 120,
+                quantity: 1
+            };
+            
+            cart.push(item);
+            updateCartDisplay();
+            updateDebugInfo();
+        }
+        
+        function addTestItem2() {
+            if (!currentTable) {
+                alert('กรุณาเลือกโต๊ะก่อน');
+                return;
+            }
+            
+            const item = {
+                item_id: 2,
+                name: 'ต้มยำกุ้ง',
+                price: 150,
+                quantity: 1
+            };
+            
+            cart.push(item);
+            updateCartDisplay();
+            updateDebugInfo();
+        }
+        
+        function updateCartDisplay() {
+            const cartDisplay = document.getElementById('cart-display');
+            const confirmBtn = document.getElementById('confirm-btn');
+            
+            if (cart.length === 0) {
+                cartDisplay.innerHTML = '<p>ตะกร้าว่าง</p>';
+                confirmBtn.disabled = true;
+            } else {
+                let html = '<ul>';
+                cart.forEach(item => {
+                    html += `<li>${item.name} - ฿${item.price}</li>`;
+                });
+                html += '</ul>';
+                cartDisplay.innerHTML = html;
+                confirmBtn.disabled = false;
+            }
+        }
+        
+        function updateDebugInfo() {
+            document.getElementById('current-table-debug').textContent = currentTable ? JSON.stringify(currentTable) : 'null';
+            document.getElementById('cart-length-debug').textContent = cart.length;
+            document.getElementById('cart-contents-debug').textContent = JSON.stringify(cart);
+        }
+        
+        function testConfirmOrder() {
+            if (!currentTable || cart.length === 0) {
+                alert('กรุณาเลือกโต๊ะและเพิ่มรายการอาหาร');
+                return;
+            }
+            
+            alert('ทดสอบการยืนยันการสั่ง - สำเร็จ!');
+            console.log('Order data:', {
+                table_id: currentTable.id,
+                items: cart
+            });
+        }
+        
+        // เรียกใช้เมื่อโหลดหน้า
+        updateDebugInfo();
+    </script>
+</body>
+</html>

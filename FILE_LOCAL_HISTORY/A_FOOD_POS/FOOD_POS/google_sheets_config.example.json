@@ -1,0 +1,37 @@
+{
+  "spreadsheet_id": "1AbcdEFGhijklmnopQRSTuvwxyz1234567890",
+  "sheet_name": "ยอดขาย",
+  "enabled": true,
+  "credentials_file": "credentials.json",
+  "sheets": {
+    "orders": "Orders",
+    "order_items": "Order_Items", 
+    "daily_summary": "Daily_Summary"
+  },
+  "headers": {
+    "orders": [
+      "Order ID",
+      "Table Number", 
+      "Total Amount",
+      "Status",
+      "Created At",
+      "Completed At"
+    ],
+    "order_items": [
+      "Order ID",
+      "Item Name",
+      "Quantity",
+      "Price", 
+      "Total",
+      "Options"
+    ],
+    "daily_summary": [
+      "Date",
+      "Total Orders",
+      "Total Amount",
+      "Average Order Value"
+    ]
+  },
+  "auto_create_sheets": true,
+  "auto_create_headers": true
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .success { border-color: #28a745; background: #d4edda; }
+    </style>
+</head>
+<body>
+    <h1>Test API การสั่งอาหาร</h1>
+    
+    <button onclick="testSimpleOrder()">ทดสอบการสั่งอาหารแบบง่าย</button>
+    <button onclick="testOrderWithOptions()">ทดสอบการสั่งอาหารพร้อมตัวเลือก</button>
+    <button onclick="testGetMenuItems()">ทดสอบดึงข้อมูลเมนู</button>
+    
+    <div id="result" class="result"></div>
+
+    <script>
+        function showResult(message, isError = false) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = isError ? 'result error' : 'result success';
+        }
+
+        async function testGetMenuItems() {
+            try {
+                console.log('[TEST] Testing get menu items...');
+                const response = await fetch('http://localhost:5000/api/menu');
+                const data = await response.json();
+                console.log('[TEST] Menu items response:', data);
+                
+                if (data.success && data.data.length > 0) {
+                    showResult(`✅ ดึงข้อมูลเมนูสำเร็จ: พบ ${data.data.length} รายการ<br>รายการแรก: ${data.data[0].name} (ID: ${data.data[0].item_id})`);
+                } else {
+                    showResult('❌ ไม่พบข้อมูลเมนู', true);
+                }
+            } catch (error) {
+                console.error('[TEST] Error getting menu:', error);
+                showResult(`❌ เกิดข้อผิดพลาด: ${error.message}`, true);
+            }
+        }
+
+        async function testSimpleOrder() {
+            try {
+                console.log('[TEST] Testing simple order...');
+                
+                // ดึงข้อมูลเมนูก่อน
+                const menuResponse = await fetch('http://localhost:5000/api/menu');
+                const menuData = await menuResponse.json();
+                
+                if (!menuData.success || menuData.data.length === 0) {
+                    showResult('❌ ไม่พบข้อมูลเมนูสำหรับทดสอบ', true);
+                    return;
+                }
+                
+                const firstItem = menuData.data[0];
+                console.log('[TEST] Using first menu item:', firstItem);
+                
+                const orderData = {
+                    table_id: 1,
+                    session_id: 'test-session-' + Date.now(),
+                    items: [{
+                        item_id: firstItem.item_id,
+                        quantity: 1,
+                        price: firstItem.price
+                    }]
+                };
+                
+                console.log('[TEST] Sending order data:', orderData);
+                
+                const response = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                console.log('[TEST] Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('[TEST] Error response:', errorText);
+                    showResult(`❌ HTTP ${response.status}: ${errorText}`, true);
+                    return;
+                }
+                
+                const result = await response.json();
+                console.log('[TEST] Order result:', result);
+                
+                if (result.success) {
+                    showResult(`✅ สั่งอาหารสำเร็จ!<br>Order ID: ${result.data.order_id}<br>Session ID: ${result.data.session_id}`);
+                } else {
+                    showResult(`❌ ${result.error || 'เกิดข้อผิดพลาด'}`, true);
+                }
+                
+            } catch (error) {
+                console.error('[TEST] Error:', error);
+                showResult(`❌ เกิดข้อผิดพลาด: ${error.message}`, true);
+            }
+        }
+
+        async function testOrderWithOptions() {
+            try {
+                console.log('[TEST] Testing order with options...');
+                
+                // ดึงข้อมูลเมนูก่อน
+                const menuResponse = await fetch('http://localhost:5000/api/menu');
+                const menuData = await menuResponse.json();
+                
+                if (!menuData.success || menuData.data.length === 0) {
+                    showResult('❌ ไม่พบข้อมูลเมนูสำหรับทดสอบ', true);
+                    return;
+                }
+                
+                const firstItem = menuData.data[0];
+                console.log('[TEST] Using first menu item:', firstItem);
+                
+                const orderData = {
+                    table_id: 2,
+                    session_id: 'test-session-options-' + Date.now(),
+                    items: [{
+                        item_id: firstItem.item_id,
+                        quantity: 2,
+                        price: firstItem.price,
+                        selected_option: 'ปกติ',
+                        note: 'ไม่ใส่ผัก'
+                    }]
+                };
+                
+                console.log('[TEST] Sending order data with options:', orderData);
+                
+                const response = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                
+                console.log('[TEST] Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('[TEST] Error response:', errorText);
+                    showResult(`❌ HTTP ${response.status}: ${errorText}`, true);
+                    return;
+                }
+                
+                const result = await response.json();
+                console.log('[TEST] Order result:', result);
+                
+                if (result.success) {
+                    showResult(`✅ สั่งอาหารพร้อมตัวเลือกสำเร็จ!<br>Order ID: ${result.data.order_id}<br>Session ID: ${result.data.session_id}`);
+                } else {
+                    showResult(`❌ ${result.error || 'เกิดข้อผิดพลาด'}`, true);
+                }
+                
+            } catch (error) {
+                console.error('[TEST] Error:', error);
+                showResult(`❌ เกิดข้อผิดพลาด: ${error.message}`, true);
+            }
+        }
+    </script>
+</body>
+</html>

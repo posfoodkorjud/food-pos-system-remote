@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตัวอย่างตัวเลือกที่ปรับปรุงแล้ว - ระบบ POS อาหารไทย</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="modal-improvements.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .feature-demo {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .demo-title {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-radio { background-color: #e74c3c; }
+        .status-checkbox { background-color: #27ae60; }
+        .status-default { background-color: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="text-center mb-4">
+            <i class="fas fa-utensils me-2"></i>
+            ตัวอย่างตัวเลือกที่ปรับปรุงแล้ว
+        </h1>
+        
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>การปรับปรุงที่ทำ:</strong>
+            <ul class="mb-0 mt-2">
+                <li><span class="status-indicator status-radio"></span>ระดับความเผ็ด: เปลี่ยนเป็นเลือกได้อย่างเดียว (Radio Button)</li>
+                <li><span class="status-indicator status-default"></span>ตัวเลือกพิเศษ: ค่าเริ่มต้นเป็น "ไม่เพิ่ม"</li>
+                <li><span class="status-indicator status-checkbox"></span>เงื่อนไขพิเศษ: เลือก "ไม่เพิ่ม" จะยกเลิกตัวเลือกอื่น</li>
+            </ul>
+        </div>
+
+        <!-- Spice Level Demo -->
+        <div class="feature-demo">
+            <h3 class="demo-title">
+                <i class="fas fa-pepper-hot me-2 text-warning"></i>
+                ระดับความเผ็ด (เลือกได้อย่างเดียว)
+            </h3>
+            <div id="spiceOptions" class="mb-4">
+                <div class="row g-2">
+                    <div class="col-4">
+                        <input type="radio" class="btn-check" name="spiceLevel" id="spice0" value="ปกติ" data-price="0" checked>
+                        <label class="btn btn-outline-warning w-100" for="spice0">ปกติ</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="radio" class="btn-check" name="spiceLevel" id="spice1" value="เผ็ดน้อย" data-price="0">
+                        <label class="btn btn-outline-warning w-100" for="spice1">เผ็ดน้อย</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="radio" class="btn-check" name="spiceLevel" id="spice2" value="เผ็ดมาก" data-price="0">
+                        <label class="btn btn-outline-warning w-100" for="spice2">เผ็ดมาก</label>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>หมายเหตุ:</strong> ตอนนี้สามารถเลือกระดับความเผ็ดได้เพียงอย่างเดียวเท่านั้น
+            </div>
+        </div>
+
+        <!-- Special Options Demo -->
+        <div class="feature-demo">
+            <h3 class="demo-title">
+                <i class="fas fa-plus-circle me-2 text-success"></i>
+                ตัวเลือกพิเศษ (เลือกได้หลายตัวเลือก)
+            </h3>
+            <div id="specialOptions" class="mb-4">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="checkbox" class="btn-check" name="specialLevel" id="addon0" value="ไข่ดาว" data-price="10">
+                        <label class="btn btn-outline-success w-100" for="addon0">ไข่ดาว (+10฿)</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="checkbox" class="btn-check" name="specialLevel" id="addon1" value="ไข่เจียว" data-price="10">
+                        <label class="btn btn-outline-success w-100" for="addon1">ไข่เจียว (+10฿)</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="checkbox" class="btn-check" name="specialLevel" id="addon2" value="เพิ่มข้าว" data-price="10">
+                        <label class="btn btn-outline-success w-100" for="addon2">เพิ่มข้าว (+10฿)</label>
+                    </div>
+                    <div class="col-6">
+                        <input type="checkbox" class="btn-check" name="specialLevel" id="addon3" value="ไม่เพิ่ม" data-price="0" checked>
+                        <label class="btn btn-outline-success w-100" for="addon3">ไม่เพิ่ม</label>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>เงื่อนไขใหม่:</strong>
+                <ul class="mb-0 mt-2">
+                    <li>ค่าเริ่มต้นคือ "ไม่เพิ่ม" (เลือกอยู่แล้ว)</li>
+                    <li>เมื่อเลือก "ไม่เพิ่ม" จะยกเลิกตัวเลือกอื่นทั้งหมด</li>
+                    <li>เมื่อเลือกตัวเลือกอื่น จะยกเลิก "ไม่เพิ่ม" อัตโนมัติ</li>
+                    <li>สามารถเลือกตัวเลือกอื่นได้มากกว่า 1 ตัวเลือก (ยกเว้น "ไม่เพิ่ม")</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Test Section -->
+        <div class="feature-demo">
+            <h3 class="demo-title">
+                <i class="fas fa-flask me-2 text-primary"></i>
+                ทดสอบการทำงาน
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <button class="btn btn-primary w-100 mb-2" onclick="testSpiceSelection()">
+                        <i class="fas fa-test-tube me-2"></i>
+                        ทดสอบระดับความเผ็ด
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-success w-100 mb-2" onclick="testSpecialOptions()">
+                        <i class="fas fa-cogs me-2"></i>
+                        ทดสอบตัวเลือกพิเศษ
+                    </button>
+                </div>
+            </div>
+            <div id="testResult" class="mt-3"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Setup special options logic
+        function setupSpecialOptionsLogic() {
+            const checkboxes = document.querySelectorAll('#specialOptions input[type="checkbox"]');
+            const noAddCheckbox = Array.from(checkboxes).find(cb => cb.value === 'ไม่เพิ่ม');
+            const otherCheckboxes = Array.from(checkboxes).filter(cb => cb.value !== 'ไม่เพิ่ม');
+            
+            if (noAddCheckbox) {
+                // When "ไม่เพิ่ม" is clicked
+                noAddCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Uncheck all other options
+                        otherCheckboxes.forEach(cb => {
+                            cb.checked = false;
+                        });
+                    }
+                });
+                
+                // When any other option is clicked
+                otherCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked && noAddCheckbox.checked) {
+                            // Uncheck "ไม่เพิ่ม" when selecting other options
+                            noAddCheckbox.checked = false;
+                        }
+                    });
+                });
+            }
+        }
+
+        function testSpiceSelection() {
+            const selectedSpice = document.querySelector('input[name="spiceLevel"]:checked');
+            const result = document.getElementById('testResult');
+            
+            if (selectedSpice) {
+                result.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>ระดับความเผ็ดที่เลือก:</strong> ${selectedSpice.value}
+                        <br><small>✓ ระบบทำงานถูกต้อง - เลือกได้อย่างเดียว</small>
+                    </div>
+                `;
+            }
+        }
+
+        function testSpecialOptions() {
+            const selectedOptions = Array.from(document.querySelectorAll('input[name="specialLevel"]:checked'))
+                .map(input => input.value);
+            const result = document.getElementById('testResult');
+            
+            result.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>ตัวเลือกพิเศษที่เลือก:</strong> ${selectedOptions.join(', ')}
+                    <br><small>✓ ระบบทำงานถูกต้อง - จำนวนตัวเลือก: ${selectedOptions.length}</small>
+                </div>
+            `;
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupSpecialOptionsLogic();
+        });
+    </script>
+</body>
+</html>

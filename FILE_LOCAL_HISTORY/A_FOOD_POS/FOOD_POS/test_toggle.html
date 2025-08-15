@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Toggle Switch</title>
+    <link href="frontend/css/admin.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; background: #1a202c; color: white; }
+        .test-container { max-width: 500px; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2>ทดสอบ Toggle Switch</h2>
+        
+        <div class="menu-item">
+            <div class="menu-item-header">
+                <div>
+                    <div class="menu-item-name">ข้าวผัดหมู</div>
+                    <small class="text-muted">เมนูข้าว</small>
+                </div>
+                <div class="menu-item-price">฿60</div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="availability-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked onchange="console.log('Toggle changed:', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">พร้อมให้บริการ</span>
+                </div>
+                <div class="menu-item-actions">
+                    <button class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

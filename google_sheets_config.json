@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "spreadsheet_id": "",
+  "sheet_names": {
+    "orders": "Orders",
+    "order_items": "Order_Items",
+    "daily_summary": "Daily_Summary"
+  }
+}

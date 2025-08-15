@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Clear Table Function</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Test Clear Table Function</h1>
+    
+    <button class="test-button" onclick="testClearTableExists()">Test if clearTable exists</button>
+    <button class="test-button" onclick="testDirectClearTable()">Test clearTable(2) directly</button>
+    <button class="test-button" onclick="testFetchAPI()">Test fetch API directly</button>
+    
+    <div id="results"></div>
+    
+    <script src="js/admin.js"></script>
+    <script>
+        function log(message) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = 'result';
+            div.innerHTML = new Date().toLocaleTimeString() + ': ' + message;
+            results.appendChild(div);
+            console.log(message);
+        }
+        
+        function testClearTableExists() {
+            if (typeof window.clearTable === 'function') {
+                log('✅ window.clearTable exists and is a function');
+            } else {
+                log('❌ window.clearTable does not exist or is not a function. Type: ' + typeof window.clearTable);
+            }
+        }
+        
+        async function testDirectClearTable() {
+            try {
+                log('🔄 Testing clearTable(2)...');
+                if (typeof window.clearTable === 'function') {
+                    // Override confirm to always return true
+                    const originalConfirm = window.confirm;
+                    window.confirm = () => true;
+                    
+                    await window.clearTable(2);
+                    log('✅ clearTable(2) executed successfully');
+                    
+                    // Restore original confirm
+                    window.confirm = originalConfirm;
+                } else {
+                    log('❌ clearTable function not found');
+                }
+            } catch (error) {
+                log('❌ Error calling clearTable: ' + error.message);
+            }
+        }
+        
+        async function testFetchAPI() {
+            try {
+                log('🔄 Testing direct API call...');
+                const response = await fetch('http://localhost:5000/api/tables/2/clear', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                log('✅ Direct API call successful: ' + JSON.stringify(data));
+            } catch (error) {
+                log('❌ Direct API call failed: ' + error.message);
+            }
+        }
+        
+        // Test on page load
+        window.addEventListener('load', function() {
+            log('📄 Page loaded, testing clearTable function...');
+            testClearTableExists();
+        });
+    </script>
+</body>
+</html>
