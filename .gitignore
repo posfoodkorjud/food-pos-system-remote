@@ -1,0 +1,55 @@
+# Backup folders
+backup_before_github_update/
+menu_backups/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+venv/
+env/
+.env
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+temp_*/
+
+# Node modules (if any)
+node_modules/
+
+# Credentials and config
+credentials.json
+google_sheets_config.json
+
+# Archive files
+*.rar
+*.zip
+*.7z
+
+# Image uploads (keep structure but not actual files)
+frontend/images/menu/*
+!frontend/images/menu/.gitkeep

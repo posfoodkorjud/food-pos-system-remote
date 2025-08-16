@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการร้านอาหาร - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../frontend/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-utensils me-2"></i>
+                ระบบจัดการร้านอาหาร
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showSection('tables')">จัดการโต๊ะ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('menu')">จัดการเมนู</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('orders')">รายการสั่งอาหาร</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('settings')">ตั้งค่าระบบ</a>
+                    </li>
+                </ul>
+                <div class="navbar-nav">
+                    <span class="navbar-text me-3">
+                        <i class="fas fa-circle text-success me-1"></i>
+                        <span id="server-status">เซิร์ฟเวอร์ออนไลน์</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Tables Section -->
+        <div id="tables-section" class="content-section">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-table me-2"></i>
+                                สถานะโต๊ะ
+                            </h5>
+                            <button class="btn btn-primary btn-sm" onclick="refreshTables()">
+                                <i class="fas fa-sync-alt me-1"></i>
+                                รีเฟรช
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="tables-grid" class="row g-3">
+                                <!-- Tables will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-bell me-2"></i>
+                                การแจ้งเตือน
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="notifications-list">
+                                <div class="text-center text-muted py-3">
+                                    <i class="fas fa-bell-slash fa-2x mb-2"></i>
+                                    <p>ไม่มีการแจ้งเตือน</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Section -->
+        <div id="menu-section" class="content-section d-none">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>
+                                หมวดหมู่เมนู
+                            </h5>
+                            <button class="btn btn-primary btn-sm" onclick="showAddCategoryModal()">
+                                <i class="fas fa-plus me-1"></i>
+                                เพิ่ม
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="categories-list">
+                                <!-- Categories will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-utensils me-2"></i>
+                                รายการเมนู
+                            </h5>
+                            <button class="btn btn-primary btn-sm" onclick="showAddMenuModal()">
+                                <i class="fas fa-plus me-1"></i>
+                                เพิ่มเมนู
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="menu-items-list">
+                                <!-- Menu items will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders-section" class="content-section d-none">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-receipt me-2"></i>
+                        รายการสั่งอาหาร
+                    </h5>
+                    <div>
+                        <button class="btn btn-outline-secondary btn-sm me-2" onclick="refreshOrders()">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            รีเฟรช
+                        </button>
+                        <select class="form-select form-select-sm d-inline-block" style="width: auto;" onchange="filterOrders(this.value)">
+                            <option value="all">ทุกสถานะ</option>
+                            <option value="pending">รอดำเนินการ</option>
+                            <option value="completed">เสร็จสิ้น</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="orders-list">
+                        <!-- Orders will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="content-section d-none">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-qrcode me-2"></i>
+                                PromptPay Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="promptpay-form">
+                                <div class="mb-3">
+                                    <label class="form-label">ประเภทบัญชี</label>
+                                    <select class="form-select" id="promptpay-type">
+                                        <option value="phone">เบอร์โทรศัพท์</option>
+                                        <option value="id">เลขบัตรประชาชน</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">หมายเลข</label>
+                                    <input type="text" class="form-control" id="promptpay-value" placeholder="0901234567">
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>
+                                    บันทึก
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-globe me-2"></i>
+                                Domain Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="domain-form">
+                                <div class="mb-3">
+                                    <label class="form-label">Domain URL</label>
+                                    <input type="url" class="form-control" id="domain-url" placeholder="https://yourdomain.com">
+                                    <div class="form-text">URL สำหรับลูกค้าเข้าถึงระบบ</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>
+                                    บันทึก
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-table me-2"></i>
+                                Google Sheets Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="sheets-form">
+                                <div class="mb-3">
+                                    <label class="form-label">Sheet ID</label>
+                                    <input type="text" class="form-control" id="sheet-id" placeholder="1AbcdEFG...">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Sheet Name</label>
+                                    <input type="text" class="form-control" id="sheet-name" placeholder="ยอดขาย" value="ยอดขาย">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Credentials File</label>
+                                    <input type="file" class="form-control" id="credentials-file" accept=".json">
+                                    <div class="form-text">ไฟล์ credentials.json จาก Google Cloud Console</div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>
+                                        บันทึก
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="testGoogleSheets()">
+                                        <i class="fas fa-vial me-1"></i>
+                                        ทดสอบ
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-tools me-2"></i>
+                                เครื่องมือ
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" onclick="generateAllQR()">
+                                    <i class="fas fa-qrcode me-1"></i>
+                                    สร้าง QR Code ทุกโต๊ะ
+                                </button>
+                                <button class="btn btn-outline-success" onclick="printAllQR()">
+                                    <i class="fas fa-print me-1"></i>
+                                    พิมพ์ QR Code ทั้งหมด
+                                </button>
+                                <button class="btn btn-outline-warning" onclick="clearAllTables()">
+                                    <i class="fas fa-broom me-1"></i>
+                                    เคลียร์ทุกโต๊ะ
+                                </button>
+                                <button class="btn btn-outline-info" onclick="exportData()">
+                                    <i class="fas fa-download me-1"></i>
+                                    ส่งออกข้อมูล
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">เพิ่มหมวดหมู่เมนู</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-category-form">
+                        <div class="mb-3">
+                            <label class="form-label">ชื่อหมวดหมู่</label>
+                            <input type="text" class="form-control" id="category-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">คำอธิบาย</label>
+                            <textarea class="form-control" id="category-description" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" onclick="addCategory()">เพิ่ม</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Menu Modal -->
+    <div class="modal fade" id="addMenuModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">เพิ่มเมนูอาหาร</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-menu-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">ชื่อเมนู</label>
+                                    <input type="text" class="form-control" id="menu-name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">หมวดหมู่</label>
+                                    <select class="form-select" id="menu-category" required>
+                                        <!-- Categories will be loaded here -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">ราคา (บาท)</label>
+                                    <input type="number" class="form-control" id="menu-price" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">คำอธิบาย</label>
+                                    <textarea class="form-control" id="menu-description" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">รูปภาพ URL</label>
+                                    <input type="url" class="form-control" id="menu-image">
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="menu-available" checked>
+                                        <label class="form-check-label" for="menu-available">
+                                            พร้อมให้บริการ
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Food Options Section -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <button class="btn btn-link p-0 text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#foodOptionsCollapse" aria-expanded="false" aria-controls="foodOptionsCollapse">
+                                                <i class="fas fa-chevron-down me-2"></i>
+                                                ตัวเลือกสำหรับอาหาร
+                                            </button>
+                                        </h6>
+                                    </div>
+                                    <div class="collapse" id="foodOptionsCollapse">
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                    <label class="form-label">ประเภทตัวเลือก (เลือกได้หลายตัวเลือก)</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="option-type" id="option-none" value="none" checked>
+                                        <label class="form-check-label" for="option-none">ไม่ระบุ</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="option-type" id="option-spice" value="spice">
+                                        <label class="form-check-label" for="option-spice">ระดับความเผ็ด</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="option-type" id="option-sweet" value="sweet">
+                                        <label class="form-check-label" for="option-sweet">ระดับความหวาน</label>
+                                    </div>
+                                </div>
+                                
+                                <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const noneCheckbox = document.getElementById('option-none');
+                                    const otherCheckboxes = document.querySelectorAll('input[name="option-type"]:not(#option-none)');
+                                    
+                                    // เมื่อคลิก "ไม่ระบุ"
+                                    if (noneCheckbox) {
+                                        noneCheckbox.addEventListener('change', function() {
+                                            if (this.checked) {
+                                                // ยกเลิกการเลือกตัวเลือกอื่นทั้งหมด
+                                                otherCheckboxes.forEach(checkbox => {
+                                                    checkbox.checked = false;
+                                                });
+                                            }
+                                        });
+                                    }
+                                    
+                                    // เมื่อคลิกตัวเลือกอื่น
+                                    otherCheckboxes.forEach(checkbox => {
+                                        checkbox.addEventListener('change', function() {
+                                            if (this.checked && noneCheckbox) {
+                                                // ยกเลิกการเลือก "ไม่ระบุ"
+                                                noneCheckbox.checked = false;
+                                            }
+                                        });
+                                    });
+                                });
+                                </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" onclick="addMenuItem()">เพิ่ม</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Details Modal -->
+    <div class="modal fade" id="tableDetailsModal" tabindex="-1" aria-labelledby="tableDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tableDetailsModalLabel">
+                        <i class="fas fa-table me-2"></i>
+                        รายละเอียดโต๊ะ
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="table-details-content">
+                        <!-- Table details will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>
+                            <!-- ปุ่มด้านซ้าย -->
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                        </div>
+                        <div id="table-action-buttons">
+                            <!-- ปุ่มการทำงานจะถูกเพิ่มโดย JavaScript ตามสถานะของโต๊ะ -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order History Modal -->
+    <div class="modal fade" id="orderHistoryModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-history me-2"></i>
+                        ประวัติคำสั่งซื้อ
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Quick Filter Buttons -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <label class="form-label">ตัวกรองด่วน</label>
+                            <div class="btn-group d-block" role="group">
+                                <button type="button" class="btn btn-outline-primary active" onclick="setQuickFilter('today')">วันนี้</button>
+                                <button type="button" class="btn btn-outline-primary" onclick="setQuickFilter('7days')">7 วัน</button>
+                                <button type="button" class="btn btn-outline-primary" onclick="setQuickFilter('30days')">30 วัน</button>
+                                <button type="button" class="btn btn-outline-primary" onclick="setQuickFilter('all')">ทั้งหมด</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Monthly Filter -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">เลือกดูรายเดือน</label>
+                            <select class="form-select" id="monthlyFilter" onchange="setMonthlyFilter()">
+                                <option value="">-- เลือกเดือน --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">เลือกโต๊ะ</label>
+                            <select class="form-select" id="historyTableSelect" onchange="loadOrderHistory()">
+                                <option value="">-- ทุกโต๊ะ --</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Custom Date Range -->
+                    <div class="row mb-3">
+                        <div class="col-12 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enableCustomDateRange" onchange="toggleCustomDateRange()">
+                                <label class="form-check-label" for="enableCustomDateRange">
+                                    <i class="fas fa-calendar-alt me-2"></i>ใช้ช่วงวันที่กำหนดเอง
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3" id="customDateRangeContainer" style="display: none;">
+                        <div class="col-md-6">
+                            <label class="form-label">วันที่เริ่มต้น</label>
+                            <input type="date" class="form-control" id="historyStartDate" onchange="loadCustomDateRange()" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">วันที่สิ้นสุด</label>
+                            <input type="date" class="form-control" id="historyEndDate" onchange="loadCustomDateRange()" disabled>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary Cards -->
+                    <div class="row mb-4" id="summarySectionContainer" style="display: none;">
+                        <div class="col-12">
+                            <h6 class="mb-3"><i class="fas fa-chart-bar me-2"></i>สรุปยอดขาย</h6>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <!-- ยอดสรุป -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3" id="summaryCard">
+                                    <div class="card bg-primary text-white shadow h-100">
+                                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                                            <h6 class="card-title"><i class="fas fa-chart-line me-2"></i>ยอดสรุป</h6>
+                                            <h4 class="mb-0" id="totalSummary">0 บาท</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- บิล -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3" id="billCard">
+                                    <div class="card bg-info text-white shadow h-100">
+                                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                                            <h6 class="card-title"><i class="fas fa-receipt me-2"></i>บิล</h6>
+                                            <h4 class="mb-0" id="totalSessions">0</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ออเดอร์ -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3" id="orderCard">
+                                    <div class="card bg-success text-white shadow h-100">
+                                        <div class="card-body text-center d-flex flex-column justify-content-center">
+                                            <h6 class="card-title"><i class="fas fa-shopping-cart me-2"></i>ออเดอร์</h6>
+                                            <h4 class="mb-0" id="totalOrders">0</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="order-history-content">
+                        <!-- Order history will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                    <button type="button" class="btn btn-primary" onclick="exportOrderHistory()">
+                        <i class="fas fa-download me-1"></i>
+                        ส่งออกข้อมูล
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="d-none">
+        <div class="spinner-overlay">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">กำลังโหลด...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../frontend/js/admin.js"></script>
+    
+    <script>
+        // เพิ่ม event listener สำหรับจัดการเงื่อนไขการเลือก checkbox ในฟอร์มเพิ่มเมนู
+        document.addEventListener('DOMContentLoaded', function() {
+            const noneCheckbox = document.getElementById('option-none');
+            const otherCheckboxes = document.querySelectorAll('input[name="option-type"]:not(#option-none)');
+            
+            // เมื่อคลิก "ไม่ระบุ"
+            if (noneCheckbox) {
+                noneCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // ยกเลิกการเลือกตัวเลือกอื่นทั้งหมด
+                        otherCheckboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                    }
+                });
+            }
+            
+            // เมื่อคลิกตัวเลือกอื่น
+            otherCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked && noneCheckbox) {
+                        // ยกเลิกการเลือก "ไม่ระบุ"
+                        noneCheckbox.checked = false;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
