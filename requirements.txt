@@ -4,6 +4,7 @@
 # Web Framework
 Flask==2.3.3
 Flask-CORS==4.0.0
+gunicorn==21.2.0
 
 # QR Code Generation
 qrcode[pil]==7.4.2

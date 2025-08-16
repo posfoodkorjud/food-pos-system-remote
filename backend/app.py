@@ -3927,14 +3927,23 @@ def check_auth():
         return jsonify({'success': False, 'message': 'เกิดข้อผิดพลาดในระบบ'}), 500
 
 if __name__ == '__main__':
-    print("\n" + "="*50)
-    print("🍽️ เริ่มต้นระบบ POS ร้านอาหาร")
-    print("📱 ลูกค้าสามารถเข้าถึงได้ที่: http://localhost:5000")
-    print("🖥️ ระบบหลังบ้าน: เปิดโปรแกรม Desktop App")
-    print("\n🚀 กำลังเริ่มต้น Flask Server...")
+    import os
+    
+    # ตรวจสอบว่าอยู่ใน production environment หรือไม่
+    is_production = os.environ.get('RENDER') or os.environ.get('RAILWAY_ENVIRONMENT')
+    port = int(os.environ.get('PORT', 5000))
+    
+    if not is_production:
+        print("\n" + "="*50)
+        print("🍽️ เริ่มต้นระบบ POS ร้านอาหาร")
+        print(f"📱 ลูกค้าสามารถเข้าถึงได้ที่: http://localhost:{port}")
+        print("🖥️ ระบบหลังบ้าน: เปิดโปรแกรม Desktop App")
+        print("\n🚀 กำลังเริ่มต้น Flask Server...")
+    else:
+        print(f"🚀 Starting POS System on port {port} (Production Mode)")
     
     app.run(
         host='0.0.0.0',  # เปิดให้เครื่องอื่นเข้าถึงได้
-        port=5000,
-        debug=True
+        port=port,
+        debug=not is_production  # ปิด debug ใน production
     )
