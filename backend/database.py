@@ -320,22 +320,6 @@ class DatabaseManager:
         # สร้างโต๊ะเริ่มต้น 10 โต๊ะ
         for i in range(1, 11):
             self.add_table(i, f"โต๊ะ {i}")
-
-    def save_setting(self, key: str, value: str):
-        """บันทึกหรืออัปเดตการตั้งค่าใน system_config"""
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        try:
-            cursor.execute('''
-                INSERT INTO system_config (config_key, config_value, updated_at)
-                VALUES (?, ?, CURRENT_TIMESTAMP)
-                ON CONFLICT(config_key) DO UPDATE SET
-                    config_value = excluded.config_value,
-                    updated_at = CURRENT_TIMESTAMP
-            ''', (key, value))
-            conn.commit()
-        finally:
-            conn.close()
         
         # สร้างหมวดหมู่เมนูเริ่มต้น
         default_categories = [
@@ -362,6 +346,22 @@ class DatabaseManager:
         
         for name, price, cat_id, desc in sample_menu:
             self.add_menu_item(name, price, cat_id, desc)
+
+    def save_setting(self, key: str, value: str):
+        """บันทึกหรืออัปเดตการตั้งค่าใน system_config"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute('''
+                INSERT INTO system_config (config_key, config_value, updated_at)
+                VALUES (?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(config_key) DO UPDATE SET
+                    config_value = excluded.config_value,
+                    updated_at = CURRENT_TIMESTAMP
+            ''', (key, value))
+            conn.commit()
+        finally:
+            conn.close()
     
     # === Table Management ===
     def add_table(self, table_id: int, table_name: str) -> bool:
